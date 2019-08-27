@@ -1,7 +1,10 @@
 class Canvas {
   constructor(canvasId) {
     this.context = document.getElementById(canvasId).getContext("2d");
-    this.gravity = 4;
+    this.width = 1024;
+    this.height = 680;
+    this.gravity = 0.9;
+    this.friction = 0.875;
   }
 
   clearCanvas() {
@@ -28,11 +31,13 @@ class Canvas {
     } )
   }
 
-  updateElements(gorduki, interactiveElements, attacksArray/*enemiesArray*/) {
+  updateElements(gorduki, keys, interactiveElements, attacksArray/*enemiesArray*/) {
+    /*
     if ( !gorduki.isOnPlatform(interactiveElements, this.gravity) ) {
       gorduki.isOnPlatform(interactiveElements, this.gravity);
-    }
+    }*/
     
+    gorduki.move(keys, this.gravity, this.friction, this.height, this.width);
     
     attacksArray.forEach(element => {
       element.xPosition += element.xSpeed;

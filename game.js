@@ -10,20 +10,55 @@ class CanvasElement {
 }
 
 class Character extends CanvasElement {
-  constructor(name, imageSource, x, y, height, width, xSpeed, ySpeed) {
+  constructor(name, imageSource, x, y, height, width, xVel, yVel, speed) {
     super(imageSource, x, y, height, width);
     this.name = name;
-    this.xSpeed = xSpeed;
-    this.ySpeed = ySpeed;
-    this.jumpStat = 128;
+    this.xVelocity = xVel;
+    this.yVelocity = yVel;
+    this.speed = speed;
+    this.jumpState = false;
   }
 
-  move(direction) {
-    switch (direction) {
-      case 37:
-        this.xPosition -= this.xSpeed; break;
-      case 39:
-        this.xPosition += this.xSpeed; break;
+  move(keys, gravity, friction, canvasHeight, canvasWidth) {
+    // Check if left arrow is pressed
+    if ( keys[37] ) {
+      if ( this.xVelocity > -this.speed ) {
+        this.xVelocity--;
+        console.log("left was pressed");
+      }
+    }
+
+    // Check if right arrow is pressed
+    if ( keys[39] ) {
+      if ( this.xVelocity < this.speed ) {
+        this.xVelocity++;
+        console.log("right was pressed");
+      }
+    }
+
+    // Check if up arrow is pressed
+    if ( keys[38] ) {
+      if ( !this.jumpState ) {
+        this.jumpState = true;
+        this.yVelocity = -this.speed*2;
+        console.log("up was pressed");
+      }
+    }
+
+    this.xPosition += this.xVelocity;
+    this.yPosition += this.yVelocity;
+    this.yVelocity += gravity;
+    this.xVelocity *= friction;
+
+    if ( this.xPosition >= canvasWidth - this.width ) {
+      this.xPosition = canvasWidth - this.width;
+    } else if ( this.xPosition <= -10 ) {
+      this.xPosition = -10;
+    }
+
+    if ( this.yPosition >= canvasHeight - this.height - 75 ) {
+      this.yPosition = canvasHeight - this.height - 75;
+      this.jumpState = false;
     }
   }
 
@@ -46,9 +81,56 @@ class Character extends CanvasElement {
 }
 
 class Hero extends Character  {
-  constructor(name, imageSource, x, y, height, width, xSpeed, ySpeed) {
-    super(name, imageSource, x, y, height, width, xSpeed, ySpeed);
+  constructor(name, imageSource, x, y, height, width, xVel, yVel, speed) {
+    super(name, imageSource, x, y, height, width, xVel, yVel, speed);
     this.attacks = [];
+  }
+
+  move(keys, gravity, friction, canvasHeight, canvasWidth) {
+    // Check if left arrow is pressed
+    if ( keys[37] ) {
+      if ( this.xVelocity > -this.speed ) {
+        this.xVelocity--;
+        console.log("left was pressed");
+      }
+    }
+
+    // Check if right arrow is pressed
+    if ( keys[39] ) {
+      if ( this.xVelocity < this.speed ) {
+        this.xVelocity++;
+        console.log("right was pressed");
+      }
+    }
+
+    // Check if up arrow is pressed
+    if ( keys[38] ) {
+      if ( !this.jumpState ) {
+        this.jumpState = true;
+        this.yVelocity = -this.speed*2;
+        console.log("up was pressed");
+      }
+    }
+
+    if ( keys[32] ) {
+      this.attack();
+    }
+
+    this.xPosition += this.xVelocity;
+    this.yPosition += this.yVelocity;
+    this.yVelocity += gravity;
+    this.xVelocity *= friction;
+
+    if ( this.xPosition >= canvasWidth - this.width ) {
+      this.xPosition = canvasWidth - this.width;
+    } else if ( this.xPosition <= -10 ) {
+      this.xPosition = -10;
+    }
+
+    if ( this.yPosition >= canvasHeight - this.height - 75 ) {
+      this.yPosition = canvasHeight - this.height - 75;
+      this.jumpState = false;
+    }
   }
 
   attack() {
